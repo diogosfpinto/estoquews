@@ -43,6 +43,8 @@ public class EstoqueWS {
             throw new AutorizacaoException("Autorização falhou.");
         }
 
+        new ItemValidador(item).validate();
+
         this.itemDao.cadastrar(item);
         return item;
     }
