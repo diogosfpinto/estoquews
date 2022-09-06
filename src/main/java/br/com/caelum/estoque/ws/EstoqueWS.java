@@ -1,6 +1,9 @@
 package br.com.caelum.estoque.ws;
 
 import br.com.caelum.estoque.modelo.item.*;
+import br.com.caelum.estoque.modelo.usuario.AutorizacaoException;
+import br.com.caelum.estoque.modelo.usuario.TokenDao;
+import br.com.caelum.estoque.modelo.usuario.TokenUsuario;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -29,5 +32,18 @@ public class EstoqueWS {
         List<Item> itensResultado  = itemDao.todosItens(lista);
 
         return itensResultado;
+    }
+
+    @WebMethod(operationName="CadastrarItem")
+    public Item cadastrarItem(@WebParam(name="token", header=true) TokenUsuario token, @WebParam(name="item") Item item)
+            throws AutorizacaoException {
+        System.out.println("Cadastrando " + item);
+
+        if(!new TokenDao().ehValido(token)){
+            throw new AutorizacaoException("Autorização falhou.");
+        }
+
+        this.itemDao.cadastrar(item);
+        return item;
     }
 }
